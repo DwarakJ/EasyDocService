@@ -1,0 +1,2 @@
+# EasyDocService
+Python,  SQLAlchemy, Sqlite
