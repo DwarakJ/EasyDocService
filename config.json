@@ -1,0 +1,3 @@
+{
+    "SQLITE_URL" : "sqlite:///foo.db"
+}
