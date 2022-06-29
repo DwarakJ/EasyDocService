@@ -11,6 +11,7 @@ class NoteType(Enum):
 
 @dataclass
 class Notes:
+    id: int
     name: str
     note: str
     created_time: datetime

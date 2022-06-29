@@ -104,9 +104,8 @@ def query_notes_with_filter(url, note_id):
     return result
 
 
+
 def update_note(url, note_id, data):
-
-
     note = query_notes_with_filter(url, note_id)
     
     if note:

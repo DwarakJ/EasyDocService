@@ -1,8 +1,5 @@
-from cgitb import reset
-from dataclasses import dataclass
 from datetime import datetime
 import datetime as dt
-from unittest import result
 from src.domain.notes import Notes, NoteType
 import json
 from src.repository import db_operations
@@ -20,11 +17,10 @@ class NotesService:
         except Exception as e:
             print(e)
         
-    def add_notes(self):
+    def add_notes(self, notes_list):
         try:
-            print("Hi")
             db_operations.insert_notes(self.db_url, notes_list)
-            print("Record inserted successfully :")
+            print("Record inserted successfully")
         except Exception as e:
             print(e)
     
@@ -41,21 +37,23 @@ class NotesService:
         try:
             result = db_operations.query_notes(self.db_url)
 
+            result_list = []
+
             for row in result:
-                print(row.notes_id, row.details, row.note_type, row.created_time, row.modified_time)
-            return result
+                note = Notes(row.notes_id, row.name, row.details, row.created_time, row.modified_time, row.note_type)
+                result_list.append(note.__dict__)
+            return result_list
         except Exception as e:
             print(e)
         
     
     def retrieve_notes_filter_by_noteid(self, note_id):
         try:
-            result = db_operations.query_notes_with_filter(self.db_url, note_id)
+            result = db_operations.query_notes_with_filter(self.db_url, note_id).first()
             
-            for row in result:
-                print(row.details, row.note_type, row.created_time, row.modified_time)
+            note = Notes(result.notes_id, result.name, result.details, result.created_time, result.modified_time, result.note_type)
 
-            return result
+            return note.__dict__
         except Exception as e:
             print(e)
 
