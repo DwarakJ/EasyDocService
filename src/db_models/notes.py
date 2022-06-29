@@ -9,6 +9,7 @@ Base = declarative_base()
 class Notes(Base):
     __tablename__ = "notes"
     notes_id = Column(Integer, primary_key=True)
+    name = Column(String, nullable=False)
     details = Column(String, nullable=False)
     note_type = Column(String, nullable=False)
     created_time = Column(DateTime, default=datetime.datetime.now(tz=gettz('Asia/Kolkata')))

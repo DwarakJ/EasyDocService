@@ -6,21 +6,21 @@ from contextlib import contextmanager
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from src.db_models.notes import Notes, Base
+from sqlalchemy.sql.expression import update
+import json
+
 
 
 log = logging.getLogger(__name__)
 
 
-SQLITE_URL = 'sqlite:///foo.db'
+curr_dir = os.getcwd()
+
+with open(os.path.join(curr_dir,"config.json")) as f:
+    config_data = json.load(f)
 
 
-def engine(url, serialize=False):
-    # if serialize:
-    #     return create_engine(url, isolation_level="SERIALIZABLE",
-    #                          client_encoding='utf8', echo=True)
-    # else:
-    #     return create_engine(url, client_encoding='utf8', echo=True)
-    
+def engine(url):
     return create_engine(url, echo=True)
 
 
@@ -64,19 +64,24 @@ def create_db(url):
     return True
 
 
-def drop_db(url):
-    if not db_exists(url):
+def drop_db():
+    db_url = os.path.join(curr_dir, config_data["DB_NAME"])
+
+    if not db_exists(db_url):
+        print(db_url)
         return False
 
-    os.remove(url)
+    os.remove(db_url)
     return True
 
 def insert_notes(url, data):
     
-    n = Notes(details = data.note, note_type = data.note_type, created_time = data.created_time, modified_time = data.modified_time)
+    notes_data = []
+    for d in data:
+        notes_data.append(Notes(name = d.name, details = d.note, note_type = d.note_type, created_time = d.created_time, modified_time = d.modified_time))
     
     with terminating_sn(url) as sn:
-        sn.add(n)
+        sn.add_all(notes_data)
         sn.commit()
         
 def query_notes(url):
@@ -88,4 +93,26 @@ def query_notes(url):
     
     return result
 
+    
+def query_notes_with_filter(url, note_id):
+
+    result = None
+
+    with terminating_sn(url) as sn:
+        result = sn.query(Notes).filter(Notes.notes_id == note_id)
+    
+    return result
+
+
+def update_note(url, note_id, data):
+
+
+    note = query_notes_with_filter(url, note_id)
+    
+    if note:
+        note.update({'note_type': data.note_type, 'name': data.name, 'details': data.note, 'modified_time': data.modified_time})
+        note.session.commit()
+        return True
+    else:
+        return False
     
