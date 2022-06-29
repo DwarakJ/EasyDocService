@@ -24,12 +24,24 @@ class NotesService:
         except Exception as e:
             print(e)
     
-    def delete_note(self):
+    def delete_db(self):
         try:
             if db_operations.drop_db():
                 print("DB deleted successfully")
             else:
                 print("DB doesn't exist")
+        except Exception as e:
+            print(e)
+
+    def delete_note(self, note_id):
+        print(note_id)
+        try:
+            if db_operations.delete_note(self.db_url, note_id):
+                print("Note deleted successfully")
+                return True
+            else:
+                print("Note doesn't exist")
+                return False
         except Exception as e:
             print(e)
 
@@ -95,4 +107,4 @@ if __name__ == "__main__":
     notes_service.update_note(2, un)
 
     notes_service.retrieve_notes_filter_by_noteid(2)
-    #notes_service.delete_note()
+    #notes_service.delete_db()

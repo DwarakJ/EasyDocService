@@ -115,3 +115,13 @@ def update_note(url, note_id, data):
     else:
         return False
     
+
+def delete_note(url, note_id):
+    note = query_notes_with_filter(url, note_id)
+
+    if note:
+        note.delete()
+        note.session.commit()
+        return True
+    else:
+        return False
