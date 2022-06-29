@@ -56,3 +56,6 @@ MANIFEST
 
 # python virtual env
 ENV
+
+# sqlite file
+*.sqlite

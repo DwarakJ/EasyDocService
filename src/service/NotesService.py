@@ -43,6 +43,7 @@ class NotesService:
 
             for row in result:
                 print(row.notes_id, row.details, row.note_type, row.created_time, row.modified_time)
+            return result
         except Exception as e:
             print(e)
         
@@ -50,10 +51,11 @@ class NotesService:
     def retrieve_notes_filter_by_noteid(self, note_id):
         try:
             result = db_operations.query_notes_with_filter(self.db_url, note_id)
-
+            
             for row in result:
                 print(row.details, row.note_type, row.created_time, row.modified_time)
-        
+
+            return result
         except Exception as e:
             print(e)
 
